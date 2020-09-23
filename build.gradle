@@ -6,17 +6,21 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.1'
+        classpath group: 'net.md-5', name: 'SpecialSource', version: '1.8.6', changing: true
     }
 }
-        
+
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply from: 'shadow-dependency.gradle'
 
-version = '1.0'
-group = 'dev.shaundsmith.minecraft'
 archivesBaseName = 'minecraft-rest'
+group = 'dev.shaundsmith.minecraft'
+version = '1.0.0'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -28,28 +32,19 @@ minecraft {
     // Simply re-run your setup task after changing the mappings to update your workspace.
     //mappings channel: 'snapshot', version: '20171003-1.12'
     mappings channel: 'snapshot', version: '20171003-1.12'
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
     runs {
         client {
             workingDirectory project.file('run-client')
-
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
         }
 
         server {
-
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
         }
@@ -66,7 +61,7 @@ dependencies {
     implementation 'io.undertow:undertow-servlet:2.1.3.Final'
     implementation 'io.undertow:undertow-websockets-jsr:2.1.3.Final'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
-    implementation 'org.projectlombok:lombok:1.18.12'
+    compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.2"
@@ -74,21 +69,17 @@ dependencies {
 
     testImplementation "org.mockito:mockito-core:3.5.10"
     testImplementation "org.mockito:mockito-junit-jupiter:3.5.10"
-
     testImplementation "org.assertj:assertj-core:3.11.1"
     testImplementation "javax.json:javax.json-api:1.1.4"
     testImplementation "org.apache.johnzon:johnzon-core:1.2.8"
     testImplementation "org.skyscreamer:jsonassert:1.5.0"
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
 }
 
 test {
-    // Enable JUnit 5 (Gradle 4.6+).
     useJUnitPlatform()
-
-    // Always run tests, even when nothing changed.
     dependsOn 'cleanTest'
-
-    // Show test results.
     testLogging {
         events "passed", "skipped", "failed"
     }
@@ -109,11 +100,28 @@ jar {
     }
 }
 
-// Example configuration to allow publishing using the maven-publish task
-// This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar') 
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-//publish.dependsOn('reobfJar')
+// Generate shaded jar
+shadowJar {
+    dependencies {
+        exclude(dependency { dependency -> isMinecraftDependency(dependency)})
+    }
+
+    exclude "module-info.class"
+    exclude "META-INF/versions/**"
+
+    relocate 'io.undertow', 'dev.shaundsmith.minecraft.rest.dependencies.io.undertow'
+    relocate 'com.fasterxml', 'dev.shaundsmith.minecraft.rest.dependencies.com.fasterxml'
+    relocate 'org.jboss', 'dev.shaundsmith.minecraft.rest.dependencies.org.jboss'
+    relocate 'org.wildfly', 'dev.shaundsmith.minecraft.rest.dependencies.org.wildfly'
+
+    classifier ''
+}
+
+reobf {
+    shadowJar {
+
+    }
+}
 
 publishing {
     publications {

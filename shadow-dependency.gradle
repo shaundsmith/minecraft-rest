@@ -1,0 +1,6 @@
+ext.isMinecraftDependency = { dependency ->
+    return dependency.name.contains("net.minecraft") ||
+            dependency.parents.any{it.name.contains("net.minecraft")} ||
+            dependency.parents.any{isMinecraftDependency(it)}
+
+}
