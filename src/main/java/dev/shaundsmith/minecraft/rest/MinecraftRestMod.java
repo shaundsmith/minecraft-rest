@@ -17,7 +17,7 @@ public class MinecraftRestMod {
     @EventHandler
     public void createServer(FMLPreInitializationEvent event) {
         server = Undertow.builder()
-                .addHttpListener(8080, "localhost")
+                .addHttpListener(MinecraftRestConfig.serverPort, "0.0.0.0")
                 .setHandler(routeFactory.createRoutes())
                 .build();
     }
