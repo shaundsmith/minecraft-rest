@@ -11,6 +11,8 @@ import dev.shaundsmith.minecraft.rest.server.GetServerDetailsRestHandler;
 import io.undertow.Handlers;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.RoutingHandler;
+import io.undertow.server.handlers.resource.ClassPathResourceManager;
+import io.undertow.server.handlers.resource.ResourceHandler;
 import lombok.AllArgsConstructor;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -24,7 +26,8 @@ public class RouteFactory {
     private final ErrorHandlerSupplier errorHandlerSupplier;
 
     public HttpHandler createRoutes() {
-        RoutingHandler routingHandler = Handlers.routing();
+        RoutingHandler routingHandler = Handlers.routing()
+                .get("/*", new ResourceHandler(new ClassPathResourceManager(getClass().getClassLoader(), "static/")));
 
         for (RestHttpHandler<?, ?> handler : getHandlers()) {
             Route route = handler.getClass().getAnnotation(Route.class);

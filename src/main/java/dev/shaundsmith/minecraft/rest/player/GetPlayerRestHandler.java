@@ -4,14 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.shaundsmith.minecraft.rest.HttpMethod;
 import dev.shaundsmith.minecraft.rest.Position;
 import dev.shaundsmith.minecraft.rest.QueryParameters;
-import dev.shaundsmith.minecraft.rest.RestResponse;
 import dev.shaundsmith.minecraft.rest.RestHttpHandler;
+import dev.shaundsmith.minecraft.rest.RestResponse;
 import dev.shaundsmith.minecraft.rest.Route;
 import dev.shaundsmith.minecraft.rest.exception.ErrorHandler;
 import io.undertow.util.HeaderMap;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.util.List;
 import java.util.UUID;

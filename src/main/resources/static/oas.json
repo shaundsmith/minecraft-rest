@@ -1,0 +1,262 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "minecraft-rest",
+    "description": "REST-like interface for Minecraft servers.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/mods/": {
+      "get": {
+        "summary": "Gets all mods",
+        "description": "Returns the details of all mods installed on the Minecraft server.",
+        "operationId": "getMods",
+        "responses": {
+          "200": {
+            "description": "Returned mods",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "entries": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Mod"
+                      }
+                    },
+                    "size": {
+                      "type": "number",
+                      "example": 1,
+                      "description": "The size of the 'entries' collection"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mods/{id}": {
+      "get": {
+        "summary": "Gets an individual mod",
+        "description": "Returns the details of an individual mod installed on the Minecraft server.",
+        "operationId": "getMod",
+        "parameters": [{
+          "in": "path",
+          "name": "id",
+          "description": "The ID of the mod to return the details for",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "minecraft-rest"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Returned mod details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mod"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The specified mod cannot be found"
+          }
+        }
+      }
+    },
+    "/players/": {
+      "get": {
+        "summary": "Gets all players",
+        "description": "Returns the names of all players currently online on the Minecraft server.",
+        "operationId": "getPlayers",
+        "responses": {
+          "200": {
+            "description": "Returned players",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "entries": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Player"
+                      }
+                    },
+                    "size": {
+                      "type": "number",
+                      "example": 1,
+                      "description": "The size of the 'entries' collection"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/players/{id}": {
+      "get": {
+        "summary": "Gets an individual player",
+        "description": "Returns the details of an individual player currently online on the Minecraft server.",
+        "operationId": "getPlayer",
+        "parameters": [{
+          "in": "path",
+          "name": "id",
+          "description": "The ID of the player to return the details for",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "UUID",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Returned player details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Player"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The specified player cannot be found"
+          }
+        }
+      }
+    },
+    "/server/": {
+      "get": {
+        "summary": "Gets the server details",
+        "description": "Returns the details of the Minecraft server.",
+        "operationId": "getServer",
+        "responses": {
+          "200": {
+            "description": "Returned server details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Server"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Mod": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The identifier of the mod",
+            "example": "minecraft-rest"
+          },
+          "name": {
+            "type": "string",
+            "description": "The display name of the mod",
+            "example": "Minecraft REST"
+          },
+          "version": {
+            "type": "string",
+            "description": "The version of the mod running on the server",
+            "example": "1.0.0"
+          }
+        }
+      },
+      "Player": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique ID of the player",
+            "format": "UUID",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the player",
+            "example": "Trevor"
+          },
+          "health": {
+            "type": "number",
+            "description": "Current health points",
+            "example": 12.25
+          },
+          "position": {
+            "$ref": "#/components/schemas/Position"
+          }
+        }
+      },
+      "Position": {
+        "description": "Position in the world",
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "x-axis position",
+            "example": 1200
+          },
+          "y": {
+            "type": "number",
+            "description": "y-axis position",
+            "example": 95
+          },
+          "z": {
+            "type": "number",
+            "description": "z-axis position",
+            "example": 10390
+          }
+        }
+      },
+      "Server": {
+        "type": "object",
+        "properties": {
+          "motd": {
+            "type": "string",
+            "description": "The 'message of the day' displayed to users of the server",
+            "example": "A minecraft server"
+          },
+          "worldName": {
+            "type": "string",
+            "description": "The name of the world folder",
+            "example": "world"
+          },
+          "port": {
+            "type": "number",
+            "description": "The port that the Minecraft server is running on",
+            "example": 25565
+          },
+          "running": {
+            "type": "boolean",
+            "description": "Whether the server is running and accepting connections",
+            "example": true
+          },
+          "onlineMode": {
+            "type": "boolean",
+            "description": "Whether the server is in 'online mode' and requires players to be logged in to their Minecraft accounts",
+            "example": false
+          },
+          "buildLimit": {
+            "type": "number",
+            "description": "The maximum y-axis build height allowed on the server",
+            "example": 255
+          }
+        }
+      }
+    }
+  }
+}
