@@ -10,6 +10,7 @@
       "get": {
         "summary": "Gets all mods",
         "description": "Returns the details of all mods installed on the Minecraft server.",
+        "tags": ["mods"],
         "operationId": "getMods",
         "responses": {
           "200": {
@@ -42,6 +43,7 @@
       "get": {
         "summary": "Gets an individual mod",
         "description": "Returns the details of an individual mod installed on the Minecraft server.",
+        "tags": ["mods"],
         "operationId": "getMod",
         "parameters": [{
           "in": "path",
@@ -74,6 +76,7 @@
       "get": {
         "summary": "Gets all players",
         "description": "Returns the names of all players currently online on the Minecraft server.",
+        "tags": ["players"],
         "operationId": "getPlayers",
         "responses": {
           "200": {
@@ -106,6 +109,7 @@
       "get": {
         "summary": "Gets an individual player",
         "description": "Returns the details of an individual player currently online on the Minecraft server.",
+        "tags": ["players"],
         "operationId": "getPlayer",
         "parameters": [{
           "in": "path",
