@@ -13,7 +13,7 @@ import java.util.List;
 @Value
 public class EntriesResource<T> {
 
-    /** The entires in the collection. */
+    /** The entries in the collection. */
     List<T> entries;
 
     /**
